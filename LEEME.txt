@@ -1,0 +1,19 @@
+EL MIRADOR DE BAGUA GRANDE - PAQUETE WEB
+
+Contenido:
+- index.html: página pública actualizada.
+- admin.html: panel privado para subir fotografías, videos y planos.
+- assets/: logos, plano y video original del proyecto.
+
+ANTES DE PUBLICAR:
+1. Mantén index.html, admin.html y la carpeta assets juntos.
+2. En Netlify, arrastra la carpeta completa (o el ZIP descomprimido) para publicar.
+3. La página pública se abrirá en la dirección principal del sitio.
+4. El panel se abrirá agregando /admin.html a esa dirección.
+
+IMPORTANTE:
+- Este paquete está preparado para conectar con el proyecto Supabase de El Mirador.
+- El acceso de administrador todavía debe probarse en la dirección publicada.
+- En Supabase, el registro de usuarios debe estar habilitado y la cuenta debe ser confirmada según la configuración de Auth.
+- No compartas contraseñas ni claves secretas. La clave incluida en el navegador es una clave pública.
+- La página usa los recursos gráficos originales del paquete anterior.
