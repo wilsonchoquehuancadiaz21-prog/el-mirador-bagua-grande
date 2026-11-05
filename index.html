@@ -84,4 +84,49 @@ document.getElementById('year').textContent=new Date().getFullYear();
  } catch(e){status.textContent='No se pudieron cargar las nuevas publicaciones en este momento.';console.error(e);}
 })();
 </script>
+ 
+<!-- Recuperación segura de contraseña del administrador -->
+<div id="password-recovery" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(4,18,34,.82);backdrop-filter:blur(8px);padding:20px;align-items:center;justify-content:center">
+ <form id="password-recovery-form" style="width:min(100%,480px);background:white;border-radius:22px;padding:30px;box-shadow:0 25px 90px #0005;font-family:Arial,sans-serif;color:#10283d">
+  <h2 style="margin:0 0 10px;color:#071b31">Crear nueva contraseña</h2>
+  <p style="line-height:1.6;color:#52677b">Estás recuperando el acceso al panel privado de El Mirador de Bagua Grande.</p>
+  <label for="new-admin-password" style="display:block;font-weight:bold;margin:18px 0 7px">Nueva contraseña</label>
+  <input id="new-admin-password" type="password" minlength="8" autocomplete="new-password" required placeholder="Mínimo 8 caracteres" style="width:100%;box-sizing:border-box;padding:14px;border:1px solid #cbd9e4;border-radius:10px;font-size:16px">
+  <label for="confirm-admin-password" style="display:block;font-weight:bold;margin:15px 0 7px">Repetir contraseña</label>
+  <input id="confirm-admin-password" type="password" minlength="8" autocomplete="new-password" required placeholder="Repite la nueva contraseña" style="width:100%;box-sizing:border-box;padding:14px;border:1px solid #cbd9e4;border-radius:10px;font-size:16px">
+  <button id="save-admin-password" type="submit" style="margin-top:20px;width:100%;padding:14px;border:0;border-radius:10px;background:linear-gradient(120deg,#f0d59d,#d9a84f);font-weight:bold;font-size:16px;cursor:pointer">Guardar nueva contraseña</button>
+  <p id="password-recovery-message" role="status" style="line-height:1.5;margin:14px 0 0"></p>
+ </form>
+</div>
+<script>
+(function(){
+ const hash=new URLSearchParams(location.hash.replace(/^#/,""));
+ const query=new URLSearchParams(location.search);
+ const isRecovery=hash.get("type")==="recovery"||query.get("type")==="recovery";
+ if(!isRecovery)return;
+ const modal=document.getElementById("password-recovery");
+ const form=document.getElementById("password-recovery-form");
+ const msg=document.getElementById("password-recovery-message");
+ const submit=document.getElementById("save-admin-password");
+ modal.style.display="flex";
+ const client=window.supabase?.createClient("https://jwkjhkhmdycabmefxyeo.supabase.co","sb_publishable_I-_h_EgBPYb7azrPsf6Ddg_J_qWXOZA",{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+ if(!client){msg.textContent="No se pudo iniciar la recuperación. Recarga la página.";return;}
+ client.auth.getSession().then(({data,error})=>{
+  if(error||!data.session){msg.textContent="El enlace venció o ya fue utilizado. Solicita un nuevo correo de recuperación desde Supabase.";msg.style.color="#a32232";}
+ }).catch(()=>{msg.textContent="No se pudo validar el enlace. Solicita uno nuevo.";msg.style.color="#a32232";});
+ form.addEventListener("submit",async function(e){
+  e.preventDefault();
+  const p=document.getElementById("new-admin-password").value;
+  const c=document.getElementById("confirm-admin-password").value;
+  if(p.length<8){msg.textContent="Usa al menos 8 caracteres.";msg.style.color="#a32232";return;}
+  if(p!==c){msg.textContent="Las contraseñas no coinciden.";msg.style.color="#a32232";return;}
+  submit.disabled=true;submit.textContent="Guardando…";
+  const {data,error}=await client.auth.updateUser({password:p});
+  if(error){msg.textContent=error.message;msg.style.color="#a32232";submit.disabled=false;submit.textContent="Guardar nueva contraseña";return;}
+  msg.textContent="Contraseña actualizada. Abriendo el panel de administración…";msg.style.color="#17613a";
+  setTimeout(()=>location.href="/admin.html",1200);
+ });
+})();
+</script>
+
 </body></html>
