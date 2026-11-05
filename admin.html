@@ -22,7 +22,8 @@ button,.button{display:inline-flex;align-items:center;justify-content:center;gap
 <section class="panel" id="login"><h2>Bienvenido al panel de administración</h2><p class="intro">Ingresa con tu cuenta autorizada para publicar fotografías, videos, planos y documentos en la página del proyecto.</p><div class="note">Acceso exclusivo para <strong>alexanderchoquehuancadiaz@gmail.com</strong>.</div>
 <label for="email">Correo administrador</label><input id="email" type="email" autocomplete="username" value="alexanderchoquehuancadiaz@gmail.com">
 <label for="pass">Contraseña</label><input id="pass" type="password" autocomplete="current-password" placeholder="Escribe tu contraseña">
-<button id="enter" class="gold">Ingresar al panel</button><button id="link" class="light">Enviar enlace de acceso</button><div id="msg" aria-live="polite"></div></section>
+<button id="enter" class="gold">Ingresar al panel</button><button id="link" class="light">Enviar enlace de acceso</button><button id="recover" class="light">🔑 Recuperar contraseña</button><div id="msg" aria-live="polite"></div></section>
+<section class="panel hidden" id="recovery"><h2>Crear una contraseña nueva</h2><p class="intro">Escribe y confirma tu nueva contraseña para recuperar el acceso al panel.</p><label for="newpass">Nueva contraseña</label><input id="newpass" type="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres"><label for="confirmpass">Confirmar nueva contraseña</label><input id="confirmpass" type="password" autocomplete="new-password" placeholder="Repite tu nueva contraseña"><button id="savepass" class="gold">Guardar nueva contraseña</button><div id="recoverymsg" aria-live="polite"></div></section>
 <section class="panel hidden" id="admin"><div class="toolbar"><div><h2>Biblioteca del proyecto</h2><p class="intro" style="margin:6px 0">Administra el contenido que aparece en la galería pública.</p></div><button id="logout" class="light">Cerrar sesión</button></div>
 <div class="chips"><span class="chip">📷 Fotografías</span><span class="chip">🎬 Videos</span><span class="chip">🗺️ Planos PDF</span><span class="chip">📄 Word · Excel · PowerPoint</span></div>
 <div class="upload-grid">
@@ -58,6 +59,8 @@ button,.button{display:inline-flex;align-items:center;justify-content:center;gap
  async function action(id,fn){$(id).disabled=true;try{await fn();}catch(e){status(id==="upload"?"upmsg":"msg",e.message||String(e),true);}finally{$(id).disabled=false;}}
  $("enter").onclick=()=>action("enter",async()=>{const {data,error}=await sb.auth.signInWithPassword({email:email(),password:$("pass").value});if(error)throw error;if(data.user?.email?.toLowerCase()!==ADMIN){await sb.auth.signOut();throw Error("Correo no autorizado.");}showPanel();});
  $("link").onclick=()=>action("link",async()=>{const {error}=await sb.auth.signInWithOtp({email:email(),options:{emailRedirectTo:window.location.origin+"/admin.html"}});if(error)throw error;status("msg","Si el correo está registrado, recibirás un enlace de acceso. Revisa también Spam.");});
+ $("recover").onclick=()=>action("recover",async()=>{const {error}=await sb.auth.resetPasswordForEmail(email(),{redirectTo:window.location.origin+"/admin.html"});if(error)throw error;status("msg","Enviamos un enlace para recuperar tu contraseña. Abre el correo más reciente y pulsa el enlace. Revisa también Spam.");});
+ $("savepass").onclick=()=>action("savepass",async()=>{const p=$("newpass").value,q=$("confirmpass").value;if(p.length<8)throw Error("La contraseña debe tener al menos 8 caracteres.");if(p!==q)throw Error("Las contraseñas no coinciden.");const {error}=await sb.auth.updateUser({password:p});if(error)throw error;status("recoverymsg","¡Contraseña actualizada! Ahora podrás ingresar al panel con tu nueva contraseña.");await sb.auth.signOut();$("recovery").classList.add("hidden");$("login").classList.remove("hidden");$("pass").value="";});
  $("logout").onclick=async()=>{await sb.auth.signOut();$("admin").classList.add("hidden");$("library").classList.add("hidden");$("login").classList.remove("hidden");};
  $("reload").onclick=()=>refresh().catch(e=>status("upmsg",e.message,true));
  $("upload").onclick=()=>action("upload",async()=>{
@@ -100,7 +103,7 @@ button,.button{display:inline-flex;align-items:center;justify-content:center;gap
   }
  }
  if(!sb){status("msg","No se pudo cargar el sistema de administración. Comprueba tu conexión.",true);return;}
- sb.auth.onAuthStateChange((event,session)=>{if(session?.user?.email?.toLowerCase()===ADMIN)showPanel();});
- sb.auth.getSession().then(({data,error})=>{if(error){status("msg",error.message,true);return;}if(data.session?.user?.email?.toLowerCase()===ADMIN)showPanel();}).catch(e=>status("msg",e.message,true));
+ sb.auth.onAuthStateChange((event,session)=>{if(event==="PASSWORD_RECOVERY"){$("login").classList.add("hidden");$("admin").classList.add("hidden");$("library").classList.add("hidden");$("recovery").classList.remove("hidden");return;}if(session?.user?.email?.toLowerCase()===ADMIN){$("recovery").classList.add("hidden");showPanel();}});
+ sb.auth.getSession().then(({data,error})=>{if(error){status("msg",error.message,true);return;}if(data.session?.user?.email?.toLowerCase()===ADMIN&&!location.href.includes("type=recovery"))showPanel();}).catch(e=>status("msg",e.message,true));
 })();
 </script></body></html>
