@@ -38,6 +38,92 @@ body{background:#f5f8fc}
 @keyframes miradorFloat{0%,100%{transform:translateY(0) rotate(1deg)}50%{transform:translateY(-9px) rotate(0deg)}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
 
+
+/* Refinamiento premium: arquitectura, profundidad y microinteracciones */
+:root{
+ --navy:#081d32;--red:#a92239;--gold:#e4bd78;--cream:#f4f7fb;
+ --ink:#112b42;--muted:#64788c;--line:#e2eaf1;
+}
+body{background:#f7f9fc;color:var(--ink);letter-spacing:-.01em}
+.topbar{padding:10px 5%;background:linear-gradient(90deg,#06182b,#0d2b46 65%,#142f48);font-size:.82rem}
+.nav{padding:12px 5%;background:rgba(255,255,255,.94);backdrop-filter:blur(20px);border-bottom:1px solid #dce6ef;box-shadow:0 8px 28px #09243b0d}
+.navlinks{gap:25px}
+.navlinks a:not(.btn){position:relative;color:#17334b}
+.navlinks a:not(.btn):after{content:"";position:absolute;left:0;right:100%;bottom:-7px;height:2px;background:var(--gold);transition:right .25s}
+.navlinks a:not(.btn):hover:after{right:0}
+.hero{padding-top:88px;padding-bottom:86px;background:
+ radial-gradient(ellipse at 78% 42%,#367da34a 0,transparent 34%),
+ radial-gradient(ellipse at 8% 100%,#a922392e 0,transparent 38%),
+ linear-gradient(118deg,#06182b 0%,#0d304b 58%,#183d56 100%),
+ url('https://raw.githubusercontent.com/wilsonchoquehuancadiaz21-prog/el-mirador-bagua-grande/main/plano-proyecto.jpg') center/cover}
+.hero:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.18;background-image:linear-gradient(#b7d8ef18 1px,transparent 1px),linear-gradient(90deg,#b7d8ef18 1px,transparent 1px);background-size:54px 54px;mask-image:linear-gradient(90deg,transparent,#000 60%,#000)}
+.hero-inner{gap:56px}
+.hero h1{font-size:clamp(2.8rem,5.4vw,5rem);letter-spacing:-.055em;line-height:.99}
+.hero p{max-width:590px;color:#dce8f1;font-size:1.08rem}
+.hero-visual{position:relative;border-radius:26px;padding:12px;background:linear-gradient(145deg,#fff,#e9f2f8);border:1px solid #ffffffbd;box-shadow:0 35px 90px #020b19a1,0 0 0 1px #b9e4ff25;transform:perspective(1100px) rotateY(-3deg) rotateX(1deg)}
+.hero-visual:before{content:"";position:absolute;inset:-1px;border-radius:27px;padding:1px;background:linear-gradient(135deg,#fff9,#e7bd7877,transparent 65%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.hero-visual img{border-radius:17px;max-height:440px}
+.visual-caption{padding:14px 8px 5px}
+.eyebrow{letter-spacing:.12em;font-size:.76rem}
+.btn{transition:transform .25s ease,box-shadow .25s ease,filter .25s ease}
+.btn:hover{transform:translateY(-3px)}
+.btn-gold{background:linear-gradient(115deg,#f4dca9,#d8a84f);box-shadow:0 12px 28px #d7a44b35}
+.btn-red{background:linear-gradient(115deg,#bd3048,#891d32);box-shadow:0 12px 26px #a51e2b2b}
+.stats{gap:14px;margin-top:-34px}
+.stat{position:relative;overflow:hidden;border:1px solid #e2eaf1;border-radius:18px;padding:25px 16px;background:linear-gradient(145deg,#fff,#f8fbfd);box-shadow:0 18px 48px #102b4312}
+.stat:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(var(--gold),#c88f39)}
+.stat strong{font-size:1.72rem;letter-spacing:-.04em;color:#a92239}
+.stat span{font-size:.86rem}
+section{padding-top:84px;padding-bottom:84px}
+.section-head{margin-bottom:44px}
+.section-head h2{letter-spacing:-.045em}
+.kicker{letter-spacing:.16em;font-size:.73rem}
+.feature-grid{gap:20px}
+.feature{position:relative;overflow:hidden;border-radius:20px;padding:28px 26px;background:linear-gradient(145deg,#fff,#fbfdff);border:1px solid #e1eaf2;box-shadow:0 14px 38px #102b430b}
+.feature:after{content:"";position:absolute;width:130px;height:130px;border-radius:50%;right:-72px;bottom:-78px;background:radial-gradient(circle,#e4bd7830,transparent 70%);pointer-events:none}
+.feature-icon{width:52px;height:52px;border-radius:16px;background:linear-gradient(145deg,#eaf5fb,#f8e9ce);font-size:1.45rem}
+.feature h3{font-size:1.08rem;letter-spacing:-.02em}
+.price-panel{position:relative;overflow:hidden;border:1px solid #ffffff20;background:radial-gradient(circle at 92% 8%,#ffffff20,transparent 30%),linear-gradient(125deg,#071b30,#123b58 68%,#842338);border-radius:28px;padding:42px;box-shadow:0 28px 65px #0a294322}
+.price-panel:after{content:"";position:absolute;width:360px;height:360px;border:1px solid #ffffff18;border-radius:50%;right:-160px;bottom:-245px;box-shadow:0 0 0 35px #ffffff08,0 0 0 70px #ffffff05;pointer-events:none}
+.price-panel h2{letter-spacing:-.045em;max-width:580px}
+.price{font-size:clamp(2.3rem,4vw,3.15rem);letter-spacing:-.05em;color:#f2d69f}
+.payment-box{position:relative;z-index:1;border:1px solid #ffffffa8;border-radius:20px;box-shadow:0 18px 50px #020d1d2b}
+.payment-row{font-size:.94rem}
+.plan-frame{border:1px solid #dce6ef;border-radius:24px;padding:14px;box-shadow:0 24px 55px #102b4315}
+.plan-frame img{border-radius:15px}
+.plan-copy h3{letter-spacing:-.04em}
+.gallery{background:linear-gradient(180deg,#edf4f9 0%,#f8fafc 100%);border-top:1px solid #e4edf4;border-bottom:1px solid #e4edf4}
+.media-card{border-radius:22px;box-shadow:0 18px 42px #102b4310}
+.media-card video,.media-card img{transition:transform .5s ease}
+.media-card:hover video,.media-card:hover img{transform:scale(1.015)}
+.media-text{padding:21px 22px}
+.location-card{background:radial-gradient(circle at 100% 0%,#ffffff1a,transparent 35%),linear-gradient(145deg,#0a233a,#17445f);border:1px solid #ffffff1c;box-shadow:0 20px 45px #0a29431a}
+.map-card{background:radial-gradient(circle at 70% 20%,#ffffffb0,transparent 28%),linear-gradient(145deg,#e6f0f4,#d6e4e8);border:1px solid #d8e5ec}
+.contact{position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 0%,#367da344,transparent 48%),linear-gradient(120deg,#06182b,#103751)}
+.contact:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent 49.8%,#ffffff0b 50%,transparent 50.2%);background-size:64px 64px}
+.contact .wrap{position:relative;z-index:1}
+.contact h2{letter-spacing:-.045em}
+.footer{background:#051525;border-top:1px solid #ffffff14}
+.wa-float{width:62px;height:62px;box-shadow:0 12px 34px #0b8b4a55,0 0 0 7px #20bd5a18}
+@media(max-width:850px){
+ .hero{padding-top:60px;padding-bottom:64px}
+ .hero-inner{gap:35px}
+ .hero-visual{transform:none}
+ section{padding-top:66px;padding-bottom:66px}
+ .price-panel{padding:32px}
+}
+@media(max-width:520px){
+ .topbar{padding:8px 3%;font-size:.74rem}
+ .hero{padding-top:46px;padding-bottom:50px}
+ .hero h1{font-size:2.75rem}
+ .hero-visual{padding:9px;border-radius:20px}
+ .stats{margin-top:16px}
+ section{padding-top:54px;padding-bottom:54px}
+ .price-panel{padding:24px;border-radius:22px}
+ .stat strong{font-size:1.45rem}
+}
+@media(prefers-reduced-motion:reduce){.hero-visual{animation:none}}
+
 </style>
 </head>
 <body>
