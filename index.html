@@ -186,7 +186,7 @@ document.getElementById('year').textContent=new Date().getFullYear();
     const frame=document.createElement('iframe');frame.src=url+'#toolbar=0&navpanes=0';frame.title='Vista previa: '+title;frame.loading='lazy';frame.className='pdf-preview';mediaWrap.append(frame);
    }else{
     const icon=document.createElement('div');icon.className='document-icon';
-    icon.textContent=type==='plan'?'📐':(['doc','docx','odt','rtf'].includes(ext)?'📝':(['xls','xlsx','ods','csv'].includes(ext)?'📊':(['ppt','pptx','odp'].includes(ext)?'📽️':'📄'));
+    let iconText='📄';if(type==='plan')iconText='📐';else if(['doc','docx','odt','rtf'].includes(ext))iconText='📝';else if(['xls','xlsx','ods','csv'].includes(ext))iconText='📊';else if(['ppt','pptx','odp'].includes(ext))iconText='📽️';icon.textContent=iconText;
     const label=document.createElement('span');label.className='document-extension';label.textContent=(ext||'ARCHIVO').toUpperCase();
     mediaWrap.append(icon,label);
    }
