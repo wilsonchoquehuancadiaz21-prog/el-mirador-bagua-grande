@@ -124,6 +124,23 @@ section{padding-top:84px;padding-bottom:84px}
 }
 @media(prefers-reduced-motion:reduce){.hero-visual{animation:none}}
 
+
+/* Galería documental futurista: fotos, video, planos PDF y archivos Office/TXT */
+.media-card-live{display:flex;flex-direction:column;min-width:0;border:1px solid #d7e5ef;box-shadow:0 18px 50px #071b3114;transition:transform .25s,box-shadow .25s}
+.media-card-live:hover{transform:translateY(-5px);box-shadow:0 26px 60px #071b3124}
+.media-file-stage{min-height:210px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:radial-gradient(circle at 50% 0%,#1d5574,#071b31 78%);color:#fff}
+.media-file-stage>img,.media-file-stage>video{width:100%;height:280px;object-fit:cover;display:block;background:#071b31}
+.media-file-stage .pdf-preview{width:100%;height:300px;border:0;background:#fff}
+.document-icon{font-size:4.2rem;filter:drop-shadow(0 8px 18px #0005);padding:22px}
+.document-extension{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);border:1px solid #a9dfff66;background:#b8e7ff18;color:#f1d49b;padding:6px 13px;border-radius:99px;font-size:.75rem;font-weight:900;letter-spacing:.12em;backdrop-filter:blur(12px)}
+.media-card-live .media-text{padding:20px;display:flex;flex-direction:column;align-items:flex-start;flex:1}
+.media-type-tag{font-size:.68rem;letter-spacing:.14em;font-weight:900;color:#18739a;background:#eaf6fc;border:1px solid #d1eaf7;padding:6px 10px;border-radius:99px;margin-bottom:11px}
+.media-card-live .media-text h3{font-size:1.12rem;line-height:1.35;margin:0 0 8px;color:#09243b}
+.media-card-live .media-text p{color:#657b8e;line-height:1.6;margin:0 0 16px}
+.media-file-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:auto}
+.file-action{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:10px;border:1px solid #cbdce8;color:#173d58;font-size:.83rem;font-weight:800;background:#f5f9fc}
+.file-action.primary{background:linear-gradient(120deg,#123e5b,#071b31);border-color:#123e5b;color:#fff}
+@media(max-width:600px){.media-file-stage>img,.media-file-stage>video{height:230px}.media-file-stage .pdf-preview{height:250px}.media-file-actions{width:100%}.file-action{flex:1}}
 </style>
 </head>
 <body>
@@ -155,17 +172,35 @@ document.getElementById('year').textContent=new Date().getFullYear();
   if(error) throw error;
   if(!data || !data.length){status.textContent='Próximamente compartiremos más fotografías, videos y planos.';return;}
   data.forEach(item=>{
-   const card=document.createElement('article');card.className='media-card';
-   const link=document.createElement('a');link.href=item.public_url;link.target='_blank';link.rel='noopener';
-   let media;
-   if(item.media_type==='video'){media=document.createElement('video');media.controls=true;media.playsInline=true;media.preload='metadata';media.src=item.public_url;}
-   else if(item.media_type==='photo'){media=document.createElement('img');media.src=item.public_url;media.alt=item.title||'Fotografía del proyecto';}
-   else {media=document.createElement('div');media.style.cssText='padding:34px;text-align:center;font-size:2.5rem;background:#edf2f6';media.textContent='📄';}
-   link.appendChild(media);
-   const text=document.createElement('div');text.className='media-text';
-   const h=document.createElement('h3');h.textContent=item.title||'Actualización del proyecto';
-   const p=document.createElement('p');p.textContent=item.description|| (item.media_type==='plan'?'Abrir plano en PDF':'Contenido del proyecto');
-   text.append(h,p);card.append(link,text);grid.append(card);
+   const card=document.createElement('article');card.className='media-card media-card-live';
+   const url=item.public_url||'#';
+   const ext=(url.split('?')[0].split('.').pop()||'').toLowerCase();
+   const title=item.title||'Actualización del proyecto';
+   const type=item.media_type||'document';
+   const mediaWrap=document.createElement('div');mediaWrap.className='media-file-stage';
+   if(type==='video'){
+    const video=document.createElement('video');video.controls=true;video.playsInline=true;video.preload='metadata';video.src=url;video.setAttribute('aria-label',title);mediaWrap.append(video);
+   }else if(type==='photo'){
+    const img=document.createElement('img');img.src=url;img.alt=title;img.loading='lazy';mediaWrap.append(img);
+   }else if(type==='plan' && ext==='pdf'){
+    const frame=document.createElement('iframe');frame.src=url+'#toolbar=0&navpanes=0';frame.title='Vista previa: '+title;frame.loading='lazy';frame.className='pdf-preview';mediaWrap.append(frame);
+   }else{
+    const icon=document.createElement('div');icon.className='document-icon';
+    icon.textContent=type==='plan'?'📐':(['doc','docx','odt','rtf'].includes(ext)?'📝':(['xls','xlsx','ods','csv'].includes(ext)?'📊':(['ppt','pptx','odp'].includes(ext)?'📽️':'📄'));
+    const label=document.createElement('span');label.className='document-extension';label.textContent=(ext||'ARCHIVO').toUpperCase();
+    mediaWrap.append(icon,label);
+   }
+   const info=document.createElement('div');info.className='media-text';
+   const badge=document.createElement('span');badge.className='media-type-tag';
+   badge.textContent=type==='photo'?'FOTOGRAFÍA':type==='video'?'VIDEO':type==='plan'?'PLANO / PDF':'DOCUMENTO';
+   const h=document.createElement('h3');h.textContent=title;
+   const p=document.createElement('p');p.textContent=item.description|| (type==='plan'?'Plano técnico del proyecto.':type==='document'?'Documento informativo del proyecto.':'Material audiovisual de El Mirador de Bagua Grande.');
+   info.append(badge,h,p);
+   const actions=document.createElement('div');actions.className='media-file-actions';
+   const open=document.createElement('a');open.href=url;open.target='_blank';open.rel='noopener';open.className='file-action primary';open.textContent=type==='plan'?'Ver plano PDF':type==='document'?'Abrir documento':'Ver archivo';
+   const download=document.createElement('a');download.href=url;download.target='_blank';download.rel='noopener';download.className='file-action';download.textContent='Descargar';download.setAttribute('download','');
+   actions.append(open,download);info.append(actions);
+   card.append(mediaWrap,info);grid.append(card);
   });
   status.textContent='';
  } catch(e){status.textContent='No se pudieron cargar las nuevas publicaciones en este momento.';console.error(e);}
